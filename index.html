@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kirby Derby's Ice Cream — Family-Owned & Super Scoopy!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     KIRBY DERBY'S ICE CREAM
+     One-file site: Landing + Shop + Game + Chatbot
+     Font: Luckiest Guy. No gradients. Heavy shadows. Real photos.
+     ------------------------------------------------------------
+     IMAGE FILES NEEDED (put these in an /images folder next to
+     this index.html, exact names):
+       images/kirbyDerbysIcecreamShop_LogoBanner.png <- big hero sign
+       images/KirbyDerbyIceCream.png        <- small logo (nav + footer)
+       images/icecream.png                  <- cartoon cone (Kirby's avatar)
+       images/KirbyDerbyBrothers.png        <- photo of Charlie & Wesley
+       All 13 flavor photos are wired in:
+       images/chocolate.png  images/old_fashion_vanilla.png
+       images/organic_strawberry.png  images/cookiedough.png
+       images/cookiemonster.png  images/butterscotch_pecan.png
+       images/chocolate_chip_mint.png  images/orange_mango_strawberry.png
+       images/raspberry_blueberry_strawberry.png  images/rainbow_sherbert.png
+       images/birthdayCake.png  images/oreo.png
+       (Double Chocolate currently reuses chocolate.png — swap if you
+        get a separate double-chocolate photo.)
+     ------------------------------------------------------------
+     MAKE IT "REAL" LATER (search these tags):
+       [PLUG-IN: PAYMENT]  -> real checkout
+       [PLUG-IN: AI]       -> real AI chatbot
+       [PLUG-IN: IMAGES]   -> add remaining flavor photos
+       [PLUG-IN: CONTACT]  -> add real contact info
+     ============================================================ */
+
+  :root {
+    --teal: #2FB7BE;
+    --teal-deep: #1E8E94;
+    --teal-light: #7ED9DD;
+    --pink: #FF4FA3;
+    --pink-deep: #D93682;
+    --pink-light: #FF9FCC;
+    --yellow: #FFE88A;       /* buttery — buttons only, never in fonts */
+    --yellow-gold: #F4B400;
+    --cream: #F6EBDD;
+    --white: #FFFFFF;
+    --ink: #1F1F1F;
+    --shadow-card: 0 8px 0 rgba(31,31,31,0.22), 0 14px 24px rgba(31,31,31,0.18);
+    --shadow-btn: 0 6px 0 var(--ink), 0 9px 14px rgba(31,31,31,0.3);
+    --font-display: 'Luckiest Guy', cursive;
+    --font-body: 'Baloo 2', cursive;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(31,31,31,0.025) 0px,
+      rgba(31,31,31,0.025) 2px,
+      transparent 2px,
+      transparent 28px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap { position: relative; z-index: 1; }
+
+  /* display font helper — never yellow, thick outline, offset shadow */
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: 0.5px;
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+  }
+
+  /* ---------- MELTING DRIP STRIP (reusable fun element) ---------- */
+  .drip {
+    height: 26px;
+    position: relative;
+    margin-top: -2px;
+  }
+  .drip svg { display: block; width: 100%; height: 100%; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--teal);
+    border-bottom: 5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.4rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 0.5rem;
+    cursor: pointer;
+  }
+  .brand img { height: 42px; width: auto; filter: drop-shadow(2px 2px 0 var(--ink)); }
+  .brand .brand-text {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--white);
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke fill;
+  }
+  .nav-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .nav-links button {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    letter-spacing: 0.4px;
+    background: var(--white);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--ink);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .nav-links button:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+  .nav-links button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+  .nav-links button.active { background: var(--yellow); }
+  .cart-btn { position: relative; }
+  .cart-count {
+    position: absolute;
+    top: -8px; right: -8px;
+    background: var(--pink);
+    color: var(--white);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    min-width: 20px;
+    height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px;
+  }
+
+  /* ---------- PAGES ---------- */
+  .page { display: none; padding: 2rem 1.4rem 4rem; max-width: 1100px; margin: 0 auto; }
+  .page.active { display: block; animation: pop 0.35s ease; }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: var(--pink);
+    -webkit-text-stroke: 3px var(--ink);
+    paint-order: stroke fill;
+    text-shadow: 5px 5px 0 var(--teal-deep);
+    text-align: center;
+    margin-bottom: 0.6rem;
+    transform: rotate(-2deg);
+  }
+  .section-sub {
+    text-align: center;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--white);
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    margin: 0 auto 1.6rem;
+    box-shadow: 0 4px 0 var(--ink);
+  }
+  .center { text-align: center; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: var(--teal);
+    border: 5px solid var(--ink);
+    border-radius: 28px;
+    box-shadow: var(--shadow-card);
+    padding: 2.4rem 1.6rem 2rem;
+    text-align: center;
+    margin-bottom: 1.6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.16) 2px, transparent 2px);
+    background-size: 30px 30px;
+    pointer-events: none;
+  }
+  /* the banner logo PNG as the main sign */
+  .hero-logo-img {
+    width: min(440px, 82%);
+    height: auto;
+    filter: drop-shadow(5px 6px 0 rgba(31,31,31,0.3));
+    position: relative;
+    margin-bottom: 0.2rem;
+  }
+  .hero-tag {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: var(--white);
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke fill;
+    margin: 0.6rem 0 1rem;
+    position: relative;
+  }
+  .scoop-row { font-size: 2.6rem; letter-spacing: 0.2rem; margin-bottom: 1.1rem; position: relative; }
+  .scoop-row span { display: inline-block; animation: bob 2s ease-in-out infinite; }
+  .scoop-row span:nth-child(2) { animation-delay: 0.2s; }
+  .scoop-row span:nth-child(3) { animation-delay: 0.4s; }
+  .scoop-row span:nth-child(4) { animation-delay: 0.6s; }
+  .scoop-row span:nth-child(5) { animation-delay: 0.8s; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .btn-big {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    border: 4px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.65rem 1.6rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    margin: 0.3rem;
+    color: var(--white);
+    -webkit-text-stroke: 1px var(--ink);
+    paint-order: stroke fill;
+    position: relative;
+  }
+  .btn-big:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--ink), 0 12px 18px rgba(31,31,31,0.35); }
+  .btn-big:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--ink); }
+  .btn-big.pink { background: var(--pink); }
+  .btn-big.teal { background: var(--teal); }
+  .btn-big.yellow { background: var(--yellow); color: var(--ink); -webkit-text-stroke: 0; }
+  .btn-big.white { background: var(--white); color: var(--ink); -webkit-text-stroke: 0; }
+
+  /* ---------- INFO CARDS ---------- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 1.6rem;
+  }
+  .info-card {
+    background: var(--white);
+    border: 5px solid var(--ink);
+    border-radius: 22px;
+    padding: 1.4rem;
+    box-shadow: var(--shadow-card);
+  }
+  .info-card h3 {
+    font-family: var(--font-display);
+    color: var(--pink);
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke fill;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  .info-card p { font-weight: 500; line-height: 1.5; }
+
+  /* ---------- BROTHERS ---------- */
+  .brothers {
+    background: var(--pink);
+    border: 5px solid var(--ink);
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+    padding: 1.8rem;
+    text-align: center;
+    margin-bottom: 1.6rem;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .brothers h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+    margin-bottom: 0.8rem;
+    position: relative;
+  }
+  .brothers-photo {
+    width: 100%;
+    max-width: 420px;
+    margin: 0.6rem auto 1rem;
+    border: 6px solid var(--ink);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 0 var(--teal-deep), 0 14px 22px rgba(31,31,31,0.3);
+    background: var(--cream);
+    position: relative;
+  }
+  .brothers-photo img {
+    width: 100%; height: auto; display: block;
+  }
+  .brothers p {
+    font-weight: 600;
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0.5rem auto;
+    text-shadow: 1px 1px 0 rgba(31,31,31,0.3);
+    position: relative;
+  }
+  .brothers .play-note {
+    background: var(--white);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 0.6rem 1rem;
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-weight: 700;
+    text-shadow: none;
+    box-shadow: 0 4px 0 var(--ink);
+    position: relative;
+  }
+
+  /* ---------- FLAVOR GRID ---------- */
+  .flavor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.2rem;
+  }
+  .flavor-card {
+    background: var(--white);
+    border: 5px solid var(--ink);
+    border-radius: 20px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 8px 0 rgba(31,31,31,0.2), 0 12px 20px rgba(31,31,31,0.18);
+    cursor: pointer;
+    transition: transform 0.14s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .flavor-card:hover { transform: translateY(-5px) rotate(-1.5deg); }
+  /* circular photo frame — holds a real photo OR an emoji fallback */
+  .flavor-frame {
+    width: 116px; height: 116px;
+    border-radius: 50%;
+    border: 5px solid var(--ink);
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 -6px 12px rgba(31,31,31,0.18), 4px 4px 0 var(--teal-deep);
+    position: relative;
+  }
+  .flavor-frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;        /* crops any photo cleanly into the circle */
+    display: block;
+  }
+  .flavor-frame .emoji-fallback { font-size: 3.4rem; }
+  .flavor-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    -webkit-text-stroke: 1px var(--ink);
+    paint-order: stroke fill;
+    color: var(--ink);
+    line-height: 1.18;
+    min-height: 2.5em;
+    display: flex; align-items: center;
+  }
+  .flavor-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    margin: 0.3rem 0;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .flavor-price { font-weight: 800; color: var(--teal-deep); margin: 0.2rem 0 0.5rem; }
+  .add-btn {
+    font-family: var(--font-display);
+    letter-spacing: 0.4px;
+    background: var(--pink);
+    color: var(--white);
+    -webkit-text-stroke: 0.8px var(--ink);
+    paint-order: stroke fill;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 0 var(--ink);
+  }
+  .add-btn:hover { background: var(--pink-deep); }
+  .add-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+
+  /* ---------- SHOP / CART ---------- */
+  .disclaimer {
+    background: var(--yellow);
+    border: 5px solid var(--ink);
+    border-radius: 18px;
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.4rem;
+    line-height: 1.5;
+    box-shadow: 0 6px 0 rgba(31,31,31,0.18);
+  }
+  .disclaimer strong { color: var(--pink-deep); }
+  .cart-box {
+    background: var(--white);
+    border: 5px solid var(--ink);
+    border-radius: 22px;
+    box-shadow: var(--shadow-card);
+    padding: 1.4rem;
+  }
+  .cart-box h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--pink);
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke fill;
+    margin-bottom: 0.8rem;
+  }
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom: 2px dashed #d8cdbb;
+    padding: 0.6rem 0;
+    flex-wrap: wrap;
+  }
+  .cart-item .ci-emoji { font-size: 1.6rem; width: 1.8rem; text-align: center; }
+  .cart-item .ci-thumb {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 3px solid var(--ink); object-fit: cover;
+  }
+  .cart-item .ci-name { font-weight: 800; flex: 1; min-width: 120px; }
+  .qty-ctrl { display: flex; align-items: center; gap: 0.35rem; }
+  .qty-ctrl button {
+    width: 28px; height: 28px;
+    border: 3px solid var(--ink);
+    background: var(--teal);
+    color: var(--white);
+    border-radius: 8px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .qty-ctrl button:hover { background: var(--teal-deep); }
+  .qty-ctrl .qnum { font-weight: 800; min-width: 24px; text-align: center; }
+  .ci-price { font-weight: 800; color: var(--teal-deep); min-width: 60px; text-align: right; }
+  .ci-remove {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.1rem; color: var(--pink-deep);
+  }
+  .cart-empty { font-weight: 700; color: #999; padding: 1rem 0; }
+  .cart-totals { margin-top: 1rem; font-weight: 700; }
+  .cart-totals .row {
+    display: flex; justify-content: space-between;
+    padding: 0.25rem 0;
+  }
+  .cart-totals .grand {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--pink);
+    -webkit-text-stroke: 1.2px var(--ink);
+    paint-order: stroke fill;
+    border-top: 3px solid var(--ink);
+    margin-top: 0.4rem;
+    padding-top: 0.5rem;
+  }
+  .limit-note {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--pink-deep);
+    margin-top: 0.3rem;
+  }
+
+  /* ---------- GAME ---------- */
+  #game-stage {
+    background: var(--teal-light);
+    border: 5px solid var(--ink);
+    border-radius: 22px;
+    box-shadow: var(--shadow-card);
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: block;
+    touch-action: none;
+    cursor: pointer;
+  }
+  .game-hud {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0.8rem 0;
+    flex-wrap: wrap;
+  }
+  .hud-pill {
+    background: var(--white);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.3rem 1rem;
+    font-weight: 800;
+    box-shadow: 0 4px 0 var(--ink);
+  }
+
+  /* ---------- CHATBOT ---------- */
+  .chat-window {
+    background: var(--white);
+    border: 5px solid var(--ink);
+    border-radius: 22px;
+    box-shadow: var(--shadow-card);
+    max-width: 540px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .chat-header {
+    background: var(--teal);
+    border-bottom: 4px solid var(--ink);
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .chat-header .kirby-face {
+    background: var(--white);
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    width: 46px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .chat-header .kirby-face img { width: 80%; height: 80%; object-fit: contain; }
+  .chat-header .ch-name {
+    font-family: var(--font-display);
+    color: var(--white);
+    -webkit-text-stroke: 1.2px var(--ink);
+    paint-order: stroke fill;
+    font-size: 1.2rem;
+  }
+  .chat-header .ch-status { font-size: 0.78rem; font-weight: 700; color: var(--white); }
+  .chat-log {
+    height: 320px;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: var(--cream);
+  }
+  .msg { max-width: 80%; padding: 0.55rem 0.85rem; border-radius: 16px; font-weight: 600; line-height: 1.4; }
+  .msg.kirby {
+    background: var(--teal);
+    color: var(--white);
+    border: 3px solid var(--ink);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .msg.user {
+    background: var(--yellow);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-input {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    border-top: 4px solid var(--ink);
+    background: var(--white);
+  }
+  .chat-input input {
+    flex: 1;
+    font-family: var(--font-body);
+    font-weight: 600;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    outline: none;
+  }
+  .chat-input button {
+    font-family: var(--font-display);
+    background: var(--pink);
+    color: var(--white);
+    -webkit-text-stroke: 0.8px var(--ink);
+    paint-order: stroke fill;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    cursor: pointer;
+  }
+  .chat-suggestions {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    padding: 0 0.7rem 0.7rem;
+    background: var(--white);
+  }
+  .chat-suggestions button {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.8rem;
+    background: var(--cream);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    cursor: pointer;
+  }
+  .chat-suggestions button:hover { background: var(--yellow); }
+
+  /* ---------- MODAL ---------- */
+  .modal-back {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(31,31,31,0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-back.show { display: flex; }
+  .modal {
+    background: var(--cream);
+    border: 5px solid var(--ink);
+    border-radius: 24px;
+    padding: 1.8rem;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    animation: pop 0.3s ease;
+  }
+  .modal .flavor-frame { margin: 0 auto 0.8rem; width: 130px; height: 130px; }
+  .modal .flavor-frame .emoji-fallback { font-size: 4rem; }
+  .modal h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--pink);
+    -webkit-text-stroke: 1.5px var(--ink);
+    paint-order: stroke fill;
+  }
+  .modal p { font-weight: 600; margin: 0.6rem 0; line-height: 1.5; }
+  .modal .close-x {
+    float: right;
+    background: var(--pink);
+    color: var(--white);
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: var(--ink);
+    color: var(--cream);
+    text-align: center;
+    padding: 2rem 1rem 1.6rem;
+    font-weight: 600;
+    position: relative;
+  }
+  footer .foot-logo {
+    height: 54px; width: auto;
+    margin-bottom: 0.6rem;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5));
+  }
+  footer a { color: var(--teal-light); }
+
+  /* toast */
+  #toast {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    border: 3px solid var(--yellow);
+    z-index: 200;
+    transition: transform 0.35s ease;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 520px) {
+    .brand .brand-text { display: none; }
+    .nav-links button { font-size: 0.8rem; padding: 0.35rem 0.7rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= NAV ================= -->
+  <nav>
+    <div class="brand" onclick="showPage('home')">
+      <img src="images/KirbyDerbyIceCream.png" alt="Kirby Derby's Ice Cream logo" />
+      <span class="brand-text">Kirby Derby's</span>
+    </div>
+    <div class="nav-links">
+      <button data-nav="home" class="active" onclick="showPage('home')">Home</button>
+      <button data-nav="flavors" onclick="showPage('flavors')">Flavors</button>
+      <button data-nav="shop" onclick="showPage('shop')">Shop</button>
+      <button data-nav="game" onclick="showPage('game')">Game</button>
+      <button data-nav="chat" onclick="showPage('chat')">Chat</button>
+      <button data-nav="shop" class="cart-btn" onclick="showPage('shop')">
+        Cart <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= HOME ================= -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <!-- the new banner logo PNG is the main sign -->
+      <img class="hero-logo-img" src="images/kirbyDerbysIcecreamShop_LogoBanner.png" alt="Kirby Derby's Ice Cream" />
+      <div class="hero-tag">The happiest little scoop shop in town. Smiles with every cone.</div>
+      <div class="scoop-row"><span>🍦</span><span>🍧</span><span>🍨</span><span>🍦</span><span>🍧</span></div>
+      <button class="btn-big white" onclick="showPage('flavors')">See Our Flavors!</button>
+      <button class="btn-big yellow" onclick="showPage('game')">Play the Game!</button>
+      <button class="btn-big white" onclick="showPage('chat')">Talk to Kirby!</button>
+    </div>
+    <div class="drip">
+      <svg viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,0 L1200,0 L1200,8 C1150,8 1150,22 1120,22 C1090,22 1090,8 1050,8
+                 C1000,8 1000,18 970,18 C940,18 940,8 880,8 C820,8 820,24 785,24
+                 C750,24 750,8 690,8 C630,8 630,20 600,20 C570,20 570,8 510,8
+                 C450,8 450,23 415,23 C380,23 380,8 320,8 C260,8 260,18 230,18
+                 C200,18 200,8 130,8 C70,8 70,22 40,22 C15,22 15,8 0,8 Z"
+              fill="#2FB7BE" stroke="#1F1F1F" stroke-width="3"/>
+      </svg>
+    </div>
+
+    <div class="card-grid">
+      <div class="info-card">
+        <h3>Family Owned</h3>
+        <p>Kirby Derby's is owned and run by two brothers — <strong>Charlie Erbe</strong> and <strong>Wesley Erbe</strong>. Every scoop is made with brotherly teamwork!</p>
+      </div>
+      <div class="info-card">
+        <h3>13 Wild Flavors</h3>
+        <p>From Cookie Monster to Rainbow Sherbet, we've got thirteen flavors packed with fun. Each one comes by the gallon!</p>
+      </div>
+      <div class="info-card">
+        <h3>Made Fresh, Shipped Cold</h3>
+        <p>Every order is made just for you. It takes about 2 weeks to make before we ship it out super cold.</p>
+      </div>
+    </div>
+
+    <div class="brothers">
+      <h3>Meet the Brothers Behind the Scoops</h3>
+      <div class="brothers-photo">
+        <img src="images/KirbyDerbyBrothers.png" alt="Charlie and Wesley Erbe at the ice cream shop" />
+      </div>
+      <p><strong>Charlie</strong> is the flavor inventor — he dreams up the wildest scoops. <strong>Wesley</strong> is the chief taste-tester and makes sure every gallon is perfect. Together they run Kirby Derby's Ice Cream!</p>
+      <div class="play-note">🌈 This is a play shop for now — but it's built so it could become a real ice cream business one day!</div>
+    </div>
+
+    <div class="center">
+      <button class="btn-big pink" onclick="showPage('shop')">Go to the Shop!</button>
+    </div>
+  </section>
+
+  <!-- ================= FLAVORS ================= -->
+  <section class="page" id="page-flavors">
+    <h2 class="section-title">Our 13 Flavors</h2>
+    <div class="center"><span class="section-sub">Tap any flavor to learn more — then add it to your cart!</span></div>
+    <div class="flavor-grid" id="flavorGrid"></div>
+  </section>
+
+  <!-- ================= SHOP ================= -->
+  <section class="page" id="page-shop">
+    <h2 class="section-title">The Scoop Shop</h2>
+    <div class="center"><span class="section-sub">Gallons of ice cream — $25 each!</span></div>
+
+    <div class="disclaimer">
+      📦 <strong>Please read!</strong> Every gallon is made fresh to order, so it takes
+      <strong>at least 2 weeks</strong> to be made before it ships. You can order up to
+      <strong>5 gallons of any one flavor</strong> at a time. Shipping is a flat
+      <strong>$15</strong> per order (we ship it super cold!).
+      <br /><br />
+      <em>Heads up: this is a pretend-play shop. No real ice cream will be shipped and no real money is charged.</em>
+    </div>
+
+    <div>
+      <h3 class="section-title" style="font-size:1.5rem;text-align:left;transform:rotate(-1deg);">Pick Your Flavors</h3>
+      <div class="flavor-grid" id="shopFlavorGrid" style="margin-bottom:1.4rem;"></div>
+
+      <div class="cart-box" id="cartBox">
+        <h3>🛒 Your Cart</h3>
+        <div id="cartItems"></div>
+        <div class="cart-totals" id="cartTotals"></div>
+        <div class="center" style="margin-top:1rem;">
+          <button class="btn-big pink" id="checkoutBtn" onclick="checkout()">Pretend Checkout!</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GAME ================= -->
+  <section class="page" id="page-game">
+    <h2 class="section-title">Scoop Stacker!</h2>
+    <div class="center"><span class="section-sub">Tap or click to EAT the falling scoops before they pile too high!</span></div>
+    <div class="game-hud">
+      <div class="hud-pill">🍦 Score: <span id="gameScore">0</span></div>
+      <div class="hud-pill">❤️ Lives: <span id="gameLives">3</span></div>
+      <div class="hud-pill">🏆 Best: <span id="gameBest">0</span></div>
+    </div>
+    <canvas id="game-stage" width="480" height="540"></canvas>
+    <div class="center" style="margin-top:1rem;">
+      <button class="btn-big teal" id="gameBtn" onclick="toggleGame()">Start Game!</button>
+    </div>
+    <div class="center" style="margin-top:0.8rem;font-weight:700;">
+      Catch the scoops to score. Miss one and a scoop stacks up. Three stacks and it's game over!
+    </div>
+  </section>
+
+  <!-- ================= CHAT ================= -->
+  <section class="page" id="page-chat">
+    <h2 class="section-title">Chat with Kirby</h2>
+    <div class="center"><span class="section-sub">Kirby is our friendly ice cream helper! 🍦</span></div>
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="kirby-face"><img src="images/icecream.png" alt="Kirby" /></div>
+        <div>
+          <div class="ch-name">Kirby</div>
+          <div class="ch-status">● Online &amp; ready to scoop</div>
+        </div>
+      </div>
+      <div class="chat-log" id="chatLog"></div>
+      <div class="chat-suggestions" id="chatSuggestions"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Ask Kirby something..."
+               onkeydown="if(event.key==='Enter')sendChat()" />
+        <button onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <div class="drip" style="transform:rotate(180deg);">
+    <svg viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L1200,0 L1200,8 C1150,8 1150,22 1120,22 C1090,22 1090,8 1050,8
+               C1000,8 1000,18 970,18 C940,18 940,8 880,8 C820,8 820,24 785,24
+               C750,24 750,8 690,8 C630,8 630,20 600,20 C570,20 570,8 510,8
+               C450,8 450,23 415,23 C380,23 380,8 320,8 C260,8 260,18 230,18
+               C200,18 200,8 130,8 C70,8 70,22 40,22 C15,22 15,8 0,8 Z"
+            fill="#FF4FA3" stroke="#1F1F1F" stroke-width="3"/>
+    </svg>
+  </div>
+  <footer>
+    <img class="foot-logo" src="images/KirbyDerbyIceCream.png" alt="Kirby Derby's Ice Cream" />
+    <p>A family-owned (pretend) ice cream shop by Charlie &amp; Wesley Erbe.</p>
+    <!-- [PLUG-IN: CONTACT] Add real contact info here only when you're
+         ready for it to be public. Left blank on purpose for a public site. -->
+    <p style="margin-top:0.5rem;font-size:0.85rem;opacity:0.85;">
+      Want to get in touch? Contact info coming soon!
+    </p>
+    <p style="margin-top:0.5rem;font-size:0.8rem;opacity:0.7;">
+      KirbyDerbysIcecream.com — built for play, ready for real. 🌈
+    </p>
+  </footer>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-back" id="modalBack" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   DATA — the 13 flavors
+   To add a flavor photo: put the file in images/ and set its
+   `img` field to the filename. No `img` = emoji fallback shows.
+   ============================================================ */
+const PRICE = 25;
+const SHIPPING = 15;
+const MAX_PER_FLAVOR = 5;
+
+const FLAVORS = [
+  { id:'chocolate',   name:'Chocolate',                emoji:'🍫', color:'#7b4b2a', type:'Classic',
+    img:'images/chocolate.png',
+    desc:'Rich, smooth, and super chocolatey. The flavor that started it all!' },
+  { id:'vanilla',     name:'Old Fashion Vanilla',      emoji:'🍦', color:'#f3e6c8', type:'Classic',
+    img:'images/old_fashion_vanilla.png',
+    desc:'Creamy old-fashioned vanilla made from real vanilla beans. Goes with everything!' },
+  { id:'strawberry',  name:'Organic Strawberry',       emoji:'🍓', color:'#f7a8c0', type:'Classic',
+    img:'images/organic_strawberry.png',
+    desc:'Sweet and fruity organic strawberry with real strawberry swirls in every scoop.' },
+  { id:'cookiedough', name:'Cookie Dough',             emoji:'🍪', color:'#d8b878', type:'Loaded',
+    img:'images/cookiedough.png',
+    desc:'Vanilla ice cream packed with chunks of chocolate chip cookie dough.' },
+  { id:'cookiemonster',name:'Cookie Monster',          emoji:'🧁', color:'#5fc7e0', type:'Loaded',
+    img:'images/cookiemonster.png',
+    desc:'Bright blue ice cream loaded with TWO kinds of cookies. Om nom nom!' },
+  { id:'butterscotch',name:'Butterscotch Pecan',       emoji:'🥜', color:'#c98a3b', type:'Loaded',
+    img:'images/butterscotch_pecan.png',
+    desc:'Buttery butterscotch ribbons with crunchy candied pecans.' },
+  { id:'mintchip',    name:'Chocolate Chip Mint',      emoji:'🌿', color:'#9fe0b8', type:'Classic',
+    img:'images/chocolate_chip_mint.png',
+    desc:'Cool minty ice cream with little chocolate chips all the way through.' },
+  { id:'mangosherbet',name:'Orange Mango Strawberry Sherbet', emoji:'🥭', color:'#ffb84d', type:'Sherbet',
+    img:'images/orange_mango_strawberry.png',
+    desc:'A tropical sherbet swirl of orange, mango, and strawberry. So refreshing!' },
+  { id:'berrysherbet',name:'Raspberry Blueberry Strawberry Sherbet', emoji:'🫐', color:'#8a6fd0', type:'Sherbet',
+    img:'images/raspberry_blueberry_strawberry.png',
+    desc:'Tangy raspberry, blueberry, and strawberry sherbet in a beautiful swirl.' },
+  { id:'rainbowsherbet',name:'Rainbow Sherbet',        emoji:'🌈', color:'#ff8ac0', type:'Sherbet',
+    img:'images/rainbow_sherbert.png',
+    desc:'ALL our sherbets swirled together into one rainbow of fruity flavor!' },
+  { id:'doublechoc',  name:'Double Chocolate',         emoji:'🍩', color:'#4a2c1a', type:'Loaded',
+    img:'images/chocolate.png',
+    desc:'Chocolate ice cream with chocolate chunks AND fudge. For chocolate champions.' },
+  { id:'birthdaycake',name:'Birthday Cake',            emoji:'🎂', color:'#ffd1e8', type:'Loaded',
+    img:'images/birthdayCake.png',
+    desc:'Funfetti cake-flavored ice cream with sprinkles and frosting swirl. Party time!' },
+  { id:'oreo',        name:'Cookies & Cream',          emoji:'🖤', color:'#3a3a3a', type:'Loaded',
+    img:'images/oreo.png',
+    desc:'Cookies-and-cream classic stuffed with crunchy chocolate sandwich cookies.' },
+];
+
+/* ============================================================ PAGE NAV */
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-links button[data-nav]').forEach(b => {
+    b.classList.toggle('active', b.dataset.nav === name);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name !== 'game' && gameRunning) stopGame();
+}
+
+/* ============================================================ FLAVOR CARDS */
+// builds the circular frame — real photo if it has one, emoji if not
+function frameHTML(f){
+  if (f.img){
+    return `<div class="flavor-frame"><img src="${f.img}" alt="${f.name}" /></div>`;
+  }
+  return `<div class="flavor-frame" style="background:${f.color}33;">
+            <span class="emoji-fallback">${f.emoji}</span>
+          </div>`;
+}
+function flavorCardHTML(f, withAdd){
+  return `
+    ${frameHTML(f)}
+    <div class="flavor-name">${f.name}</div>
+    <div class="flavor-tag">${f.type}</div>
+    <div class="flavor-price">$${PRICE} / gallon</div>
+    ${withAdd ? `<button class="add-btn" onclick="event.stopPropagation();addToCart('${f.id}')">Add to Cart</button>` : ''}
+  `;
+}
+function renderFlavors(){
+  const grid = document.getElementById('flavorGrid');
+  const shopGrid = document.getElementById('shopFlavorGrid');
+  grid.innerHTML = '';
+  shopGrid.innerHTML = '';
+  FLAVORS.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'flavor-card';
+    card.innerHTML = flavorCardHTML(f, false);
+    card.onclick = () => openModal(f.id);
+    grid.appendChild(card);
+
+    const shopCard = document.createElement('div');
+    shopCard.className = 'flavor-card';
+    shopCard.innerHTML = flavorCardHTML(f, true);
+    shopCard.onclick = () => openModal(f.id);
+    shopGrid.appendChild(shopCard);
+  });
+}
+
+/* ============================================================ MODAL */
+function openModal(id){
+  const f = FLAVORS.find(x => x.id === id);
+  const inCart = cart[id] || 0;
+  document.getElementById('modalContent').innerHTML = `
+    <button class="close-x" onclick="closeModal()">✕</button>
+    ${frameHTML(f)}
+    <h3>${f.name}</h3>
+    <span class="flavor-tag">${f.type}</span>
+    <p>${f.desc}</p>
+    <p style="font-weight:800;color:var(--teal-deep);font-size:1.2rem;">$${PRICE} per gallon</p>
+    <button class="btn-big pink" onclick="addToCart('${f.id}');closeModal();">Add to Cart!</button>
+    ${inCart ? `<p style="font-size:0.85rem;">You have ${inCart} in your cart.</p>` : ''}
+  `;
+  document.getElementById('modalBack').classList.add('show');
+}
+function closeModal(){ document.getElementById('modalBack').classList.remove('show'); }
+
+/* ============================================================ CART
+   [PLUG-IN: PAYMENT] checkout() is where a real payment processor
+   (Stripe, etc.) would be wired in. */
+let cart = {};
+
+function addToCart(id){
+  const current = cart[id] || 0;
+  if (current >= MAX_PER_FLAVOR){
+    showToast(`Only ${MAX_PER_FLAVOR} gallons of one flavor allowed!`);
+    return;
+  }
+  cart[id] = current + 1;
+  const f = FLAVORS.find(x => x.id === id);
+  showToast(`Added ${f.name}! 🍨`);
+  renderCart();
+}
+function changeQty(id, delta){
+  const next = (cart[id] || 0) + delta;
+  if (next <= 0){ delete cart[id]; }
+  else if (next > MAX_PER_FLAVOR){
+    showToast(`Only ${MAX_PER_FLAVOR} gallons of one flavor allowed!`);
+    return;
+  }
+  else { cart[id] = next; }
+  renderCart();
+}
+function removeFromCart(id){ delete cart[id]; renderCart(); }
+
+function cartThumb(f){
+  if (f.img) return `<img class="ci-thumb" src="${f.img}" alt="${f.name}" />`;
+  return `<span class="ci-emoji">${f.emoji}</span>`;
+}
+
+function renderCart(){
+  const itemsEl = document.getElementById('cartItems');
+  const totalsEl = document.getElementById('cartTotals');
+  const ids = Object.keys(cart);
+  let count = 0;
+  ids.forEach(id => count += cart[id]);
+  document.getElementById('cartCount').textContent = count;
+
+  if (ids.length === 0){
+    itemsEl.innerHTML = '<div class="cart-empty">Your cart is empty — go pick some flavors! 🍦</div>';
+    totalsEl.innerHTML = '';
+    document.getElementById('checkoutBtn').style.display = 'none';
+    return;
+  }
+  document.getElementById('checkoutBtn').style.display = 'inline-block';
+
+  itemsEl.innerHTML = ids.map(id => {
+    const f = FLAVORS.find(x => x.id === id);
+    const qty = cart[id];
+    const atLimit = qty >= MAX_PER_FLAVOR;
+    return `
+      <div class="cart-item">
+        ${cartThumb(f)}
+        <span class="ci-name">${f.name}</span>
+        <span class="qty-ctrl">
+          <button onclick="changeQty('${id}',-1)">−</button>
+          <span class="qnum">${qty}</span>
+          <button onclick="changeQty('${id}',1)" ${atLimit ? 'disabled style="opacity:.4;cursor:not-allowed;"' : ''}>+</button>
+        </span>
+        <span class="ci-price">$${qty * PRICE}</span>
+        <button class="ci-remove" onclick="removeFromCart('${id}')" title="Remove">🗑️</button>
+      </div>
+      ${atLimit ? `<div class="limit-note">Max ${MAX_PER_FLAVOR} gallons of ${f.name}</div>` : ''}
+    `;
+  }).join('');
+
+  const subtotal = ids.reduce((s,id) => s + cart[id]*PRICE, 0);
+  const grand = subtotal + SHIPPING;
+  totalsEl.innerHTML = `
+    <div class="row"><span>Subtotal (${count} gallon${count>1?'s':''})</span><span>$${subtotal}</span></div>
+    <div class="row"><span>Shipping</span><span>$${SHIPPING}</span></div>
+    <div class="row grand"><span>Total</span><span>$${grand}</span></div>
+    <div class="limit-note">📦 Made to order — ships in about 2 weeks!</div>
+  `;
+}
+
+function checkout(){
+  const ids = Object.keys(cart);
+  if (ids.length === 0) return;
+  let count = 0; ids.forEach(id => count += cart[id]);
+  const subtotal = ids.reduce((s,id) => s + cart[id]*PRICE, 0);
+  const grand = subtotal + SHIPPING;
+  // [PLUG-IN: PAYMENT] real checkout/payment call would go here.
+  document.getElementById('modalContent').innerHTML = `
+    <button class="close-x" onclick="closeModal()">✕</button>
+    <div style="font-size:3.4rem;">🎉🍨🎉</div>
+    <h3>Pretend Order Placed!</h3>
+    <p>You "ordered" <strong>${count} gallon${count>1?'s':''}</strong> of ice cream
+       for a pretend total of <strong>$${grand}</strong>.</p>
+    <p style="font-size:0.9rem;">In a real shop, it would be made fresh and shipped in about 2 weeks.
+       Thanks for playing at Kirby Derby's! 🌈</p>
+    <button class="btn-big pink" onclick="cart={};renderCart();closeModal();">Yay! Clear Cart</button>
+  `;
+  document.getElementById('modalBack').classList.add('show');
+}
+
+/* ============================================================ TOAST */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1900);
+}
+
+/* ============================================================ GAME — Scoop Stacker
+   Scoops fall; tap/click to eat them. Miss one -> it stacks.
+   3 stacks = game over. Pure canvas, no libraries. */
+const canvas = document.getElementById('game-stage');
+const ctx = canvas.getContext('2d');
+const SCOOP_EMOJIS = ['🍦','🍧','🍨','🍓','🍫','🌈','🧁'];
+let gameRunning = false;
+let gameScore = 0, gameLives = 3, gameBest = 0;
+let scoops = [];
+let stack = [];
+let spawnTimer = 0, spawnInterval = 70, fallSpeed = 1.6, frame = 0;
+
+function resetGame(){
+  gameScore = 0; gameLives = 3;
+  scoops = []; stack = [];
+  spawnTimer = 0; spawnInterval = 70; fallSpeed = 1.6; frame = 0;
+  updateHUD();
+}
+function updateHUD(){
+  document.getElementById('gameScore').textContent = gameScore;
+  document.getElementById('gameLives').textContent = gameLives;
+  document.getElementById('gameBest').textContent = gameBest;
+}
+function spawnScoop(){
+  const size = 38;
+  scoops.push({
+    x: Math.random() * (canvas.width - size*2) + size,
+    y: -size,
+    size,
+    emoji: SCOOP_EMOJIS[Math.floor(Math.random()*SCOOP_EMOJIS.length)],
+    wobble: Math.random()*Math.PI*2
+  });
+}
+function toggleGame(){ gameRunning ? stopGame() : startGame(); }
+function startGame(){
+  resetGame();
+  gameRunning = true;
+  document.getElementById('gameBtn').textContent = 'Stop Game';
+  requestAnimationFrame(gameLoop);
+}
+function stopGame(){
+  gameRunning = false;
+  document.getElementById('gameBtn').textContent = 'Start Game!';
+  drawIdle();
+}
+function gameOver(){
+  gameRunning = false;
+  if (gameScore > gameBest) gameBest = gameScore;
+  updateHUD();
+  document.getElementById('gameBtn').textContent = 'Play Again!';
+  ctx.fillStyle = 'rgba(31,31,31,0.8)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#FFE88A';
+  ctx.font = "42px 'Luckiest Guy', cursive";
+  ctx.textAlign = 'center';
+  ctx.fillText('GAME OVER!', canvas.width/2, canvas.height/2 - 20);
+  ctx.fillStyle = '#fff';
+  ctx.font = "24px 'Baloo 2', cursive";
+  ctx.fillText('You scooped ' + gameScore + '!', canvas.width/2, canvas.height/2 + 20);
+  ctx.fillText('Best: ' + gameBest, canvas.width/2, canvas.height/2 + 50);
+}
+function gameLoop(){
+  if (!gameRunning) return;
+  frame++;
+  ctx.fillStyle = '#7ED9DD';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  spawnTimer++;
+  if (spawnTimer >= spawnInterval){
+    spawnScoop();
+    spawnTimer = 0;
+    if (spawnInterval > 32) spawnInterval -= 0.6;
+    if (fallSpeed < 4.2) fallSpeed += 0.03;
+  }
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (let i = scoops.length - 1; i >= 0; i--){
+    const s = scoops[i];
+    s.y += fallSpeed;
+    s.wobble += 0.08;
+    const drawX = s.x + Math.sin(s.wobble) * 6;
+    ctx.font = s.size + 'px serif';
+    ctx.fillText(s.emoji, drawX, s.y);
+    if (s.y > canvas.height - 30 - stack.length*22){
+      stack.push(s.emoji);
+      scoops.splice(i,1);
+      gameLives--;
+      updateHUD();
+      if (gameLives <= 0){ drawStack(); gameOver(); return; }
+    }
+  }
+  drawStack();
+  ctx.fillStyle = 'rgba(31,31,31,0.15)';
+  ctx.fillRect(0, canvas.height-6, canvas.width, 6);
+  requestAnimationFrame(gameLoop);
+}
+function drawStack(){
+  ctx.font = '34px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < stack.length; i++){
+    ctx.fillText(stack[i], canvas.width/2, canvas.height - 24 - i*22);
+  }
+}
+function eatAt(px, py){
+  if (!gameRunning) return;
+  for (let i = scoops.length - 1; i >= 0; i--){
+    const s = scoops[i];
+    const dx = px - s.x, dy = py - s.y;
+    if (Math.sqrt(dx*dx + dy*dy) < s.size){
+      scoops.splice(i,1);
+      gameScore++;
+      updateHUD();
+      ctx.fillStyle = '#FF4FA3';
+      ctx.font = "22px 'Baloo 2'";
+      ctx.fillText('+1', s.x, s.y - 20);
+      return;
+    }
+  }
+}
+function canvasPos(e){
+  const r = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / r.width;
+  const scaleY = canvas.height / r.height;
+  const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+  const cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+  return { x: cx * scaleX, y: cy * scaleY };
+}
+canvas.addEventListener('click', e => { const p = canvasPos(e); eatAt(p.x, p.y); });
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const p = canvasPos(e); eatAt(p.x, p.y);
+}, { passive:false });
+
+function drawIdle(){
+  ctx.fillStyle = '#7ED9DD';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = '70px serif';
+  ctx.fillText('🍦🍧🍨', canvas.width/2, canvas.height/2 - 30);
+  ctx.fillStyle = '#1F1F1F';
+  ctx.font = "26px 'Luckiest Guy', cursive";
+  ctx.fillText('Press Start Game!', canvas.width/2, canvas.height/2 + 40);
+}
+drawIdle();
+
+/* ============================================================ CHATBOT — Kirby
+   Rule-based for now so it works with zero setup.
+   [PLUG-IN: AI] To make Kirby a real AI, replace getKirbyReply()
+   with a fetch() to a small backend that calls the Anthropic API
+   (the API key must stay on the server, never in this file). */
+const CHAT_SUGGESTIONS = [
+  'What flavors do you have?',
+  'How much is ice cream?',
+  'How long does shipping take?',
+  'Who owns the shop?',
+  'What is your best flavor?'
+];
+
+function getKirbyReply(text){
+  const t = text.toLowerCase();
+
+  // [PLUG-IN: AI] real version:
+  // const res = await fetch('/api/kirby', {method:'POST', body: JSON.stringify({message:text})});
+  // return (await res.json()).reply;
+
+  if (/\b(hi|hello|hey|yo|howdy)\b/.test(t))
+    return "Hi there! 🍦 I'm Kirby, the friendly helper at Kirby Derby's Ice Cream! Ask me about our flavors, prices, or shipping!";
+  if (t.includes('flavor'))
+    return "We have 13 wild flavors! 🍨 Classics like Chocolate, Vanilla, Strawberry and Chocolate Chip Mint — loaded ones like Cookie Dough, Cookie Monster, Pecan Butterscotch, Double Chocolate, Birthday Cake and Oreo — plus 3 sherbets: Mango Banana Strawberry, Blueberry Raspberry, and Rainbow! Check the Flavors page to see them all!";
+  if (t.includes('price') || t.includes('cost') || t.includes('how much') || t.includes('expensive'))
+    return "Every gallon of ice cream is $25! 💰 Shipping is a flat $15 per order. You can order up to 5 gallons of any one flavor.";
+  if (t.includes('ship') || t.includes('deliver') || t.includes('how long') || t.includes('2 week') || t.includes('two week'))
+    return "Great question! 📦 Every gallon is made fresh just for you, so it takes about 2 weeks to be made before we ship it out nice and cold!";
+  if (t.includes('who') && (t.includes('own') || t.includes('run') || t.includes('made')))
+    return "Kirby Derby's is a family-owned shop run by two brothers — Charlie Erbe and Wesley Erbe! 👦🧒 Charlie invents the flavors and Wesley is the chief taste-tester!";
+  if (t.includes('owner') || t.includes('brother') || t.includes('charlie') || t.includes('wesley') || t.includes('family'))
+    return "The shop belongs to brothers Charlie and Wesley Erbe! They run everything together — it's a real family team. 🏡";
+  if (t.includes('best') || t.includes('favorite') || t.includes('recommend') || t.includes('should i'))
+    return "Ooh, tough one! 🌈 If you want something wild, try Cookie Monster or Rainbow Sherbet. If you love chocolate, Double Chocolate is unbeatable. Birthday Cake is perfect for parties!";
+  if (t.includes('sherbet') || t.includes('sorbet'))
+    return "We have 3 sherbets! 🥭 Mango Banana Strawberry, Blueberry Raspberry, and the Rainbow Sherbet — which is ALL of them swirled together!";
+  if (t.includes('chocolate'))
+    return "Chocolate lovers, rejoice! 🍫 We have regular Chocolate, Double Chocolate (chunks AND fudge!), Cookie Dough, and Oreo. So much chocolate!";
+  if (t.includes('game') || t.includes('play'))
+    return "Yes! Check out the Game page to play Scoop Stacker! 🎮 You tap the falling scoops to eat them before they pile up. How high can you score?";
+  if (t.includes('cart') || t.includes('order') || t.includes('buy') || t.includes('checkout'))
+    return "Head to the Shop page to add flavors to your cart! 🛒 Just remember — this is a pretend-play shop, so it's all for fun. No real ice cream gets shipped!";
+  if (t.includes('real') || t.includes('pretend') || t.includes('fake'))
+    return "Right now Kirby Derby's is a pretend-play shop! 🎭 But the whole website is built so it could become a REAL ice cream business one day. Pretty cool, huh?";
+  if (t.includes('hours') || t.includes('open') || t.includes('location') || t.includes('where'))
+    return "We're an online shop, so we're open all the time on this website! 🌙☀️ Ice cream any time you want!";
+  if (t.includes('thank'))
+    return "You're so welcome! 🍦 Come back any time — there's always a scoop with your name on it!";
+  if (t.includes('bye') || t.includes('goodbye'))
+    return "Bye bye! 👋 Stay cool and keep on scooping! 🍨";
+  if (t.includes('limit') || t.includes('how many') || t.includes('5 gallon') || t.includes('five gallon'))
+    return "You can order up to 5 gallons of any one flavor at a time! 🍨 That's a LOT of ice cream!";
+  if (t.includes('your name') || t.includes('who are you'))
+    return "I'm Kirby! 🍦 I'm the friendly ice cream helper here at Kirby Derby's. I can tell you anything about our shop!";
+
+  return "Hmm, I'm just a little ice cream helper, so I know best about our flavors, prices, shipping, and the shop! 🍦 Try asking me 'What flavors do you have?' or 'How much is ice cream?'";
+}
+
+const chatLog = document.getElementById('chatLog');
+function addMsg(text, who){
+  const m = document.createElement('div');
+  m.className = 'msg ' + who;
+  m.textContent = text;
+  chatLog.appendChild(m);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  input.value = '';
+  setTimeout(() => addMsg(getKirbyReply(text), 'kirby'), 380);
+}
+function renderSuggestions(){
+  const box = document.getElementById('chatSuggestions');
+  box.innerHTML = '';
+  CHAT_SUGGESTIONS.forEach(s => {
+    const b = document.createElement('button');
+    b.textContent = s;
+    b.onclick = () => {
+      addMsg(s, 'user');
+      setTimeout(() => addMsg(getKirbyReply(s), 'kirby'), 380);
+    };
+    box.appendChild(b);
+  });
+}
+
+/* ============================================================ INIT */
+renderFlavors();
+renderCart();
+renderSuggestions();
+addMsg("Hi! I'm Kirby! 🍦 Welcome to Kirby Derby's Ice Cream! Ask me anything — or tap a question below!", 'kirby');
+</script>
+</body>
+</html>
